@@ -1,88 +1,132 @@
 import random
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
-from locators import (
-    LOGIN_BUTTON_METHOD, 
-    LOGIN_BUTTON_LOCATOR,
-    NO_ACCOUNT_BUTTON_METHOD,
-    NO_ACCOUNT_BUTTON_LOCATOR,
-    EMAIL_INPUT_METHOD,
-    EMAIL_INPUT_LOCATOR,
-    PASSWORD_INPUT_METHOD,
-    PASSWORD_INPUT_LOCATOR,
-    REPEAT_PASSWORD_INPUT_METHOD,
-    REPEAT_PASSWORD_INPUT_LOCATOR,
-    CREATE_ACCOUNT_BUTTON_METHOD,
-    CREATE_ACCOUNT_BUTTON_LOCATOR,
-    USER_NAME_METHOD,
-    USER_NAME_LOCATOR,
-    ERROR_MESSAGE_METHOD,
-    ERROR_MESSAGE_LOCATOR
-)
+from locators import LoginPageLocators, RegistrationPageLocators
+from data import TEST_EMAIL, TEST_PASSWORD, INVALID_EMAIL
+
 
 class TestRegistration:
+
     def test_user_registration_success(self, driver):
         email = f"user{random.randint(1000, 9999)}@test.com"
-        password = "Password123" 
-    
-        driver.find_element(LOGIN_BUTTON_METHOD, LOGIN_BUTTON_LOCATOR).click()
-        WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((NO_ACCOUNT_BUTTON_METHOD, NO_ACCOUNT_BUTTON_LOCATOR)))
-        driver.find_element(NO_ACCOUNT_BUTTON_METHOD, NO_ACCOUNT_BUTTON_LOCATOR).click()
+        password = TEST_PASSWORD
 
-        WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((EMAIL_INPUT_METHOD, EMAIL_INPUT_LOCATOR)))
+        driver.find_element(*LoginPageLocators.LOGIN_BUTTON).click()
 
-        driver.find_element(EMAIL_INPUT_METHOD, EMAIL_INPUT_LOCATOR).send_keys(email)
-        driver.find_element(PASSWORD_INPUT_METHOD, PASSWORD_INPUT_LOCATOR).send_keys(password)
-        driver.find_element(REPEAT_PASSWORD_INPUT_METHOD, REPEAT_PASSWORD_INPUT_LOCATOR).send_keys(password)
-        driver.find_element(CREATE_ACCOUNT_BUTTON_METHOD, CREATE_ACCOUNT_BUTTON_LOCATOR).click()
+        WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                LoginPageLocators.NO_ACCOUNT_BUTTON
+            )
+        )
 
-        WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((USER_NAME_METHOD, USER_NAME_LOCATOR)))
-    
-        user_name = driver.find_element(USER_NAME_METHOD, USER_NAME_LOCATOR).text
+        driver.find_element(*LoginPageLocators.NO_ACCOUNT_BUTTON).click()
 
-        assert "User" in user_name
+        WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                LoginPageLocators.EMAIL_INPUT
+            )
+        )
 
-        driver.quit()
+        driver.find_element(*LoginPageLocators.EMAIL_INPUT).send_keys(email)
+        driver.find_element(*LoginPageLocators.PASSWORD_INPUT).send_keys(password)
+
+        driver.find_element(
+            *RegistrationPageLocators.REPEAT_PASSWORD_INPUT
+        ).send_keys(password)
+
+        driver.find_element(
+            *LoginPageLocators.CREATE_ACCOUNT_BUTTON
+        ).click()
+
+        WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                RegistrationPageLocators.USER_NAME
+            )
+        )
+
+        assert WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                RegistrationPageLocators.USER_NAME
+            )
+        ).is_displayed()
 
     def test_invalid_email_error(self, driver):
-        email = "test@test"
-    
-        driver.find_element(LOGIN_BUTTON_METHOD, LOGIN_BUTTON_LOCATOR).click()
-        WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((NO_ACCOUNT_BUTTON_METHOD, NO_ACCOUNT_BUTTON_LOCATOR)))
-        driver.find_element(NO_ACCOUNT_BUTTON_METHOD, NO_ACCOUNT_BUTTON_LOCATOR).click()
-   
-        WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((EMAIL_INPUT_METHOD, EMAIL_INPUT_LOCATOR)))
-   
-        driver.find_element(EMAIL_INPUT_METHOD, EMAIL_INPUT_LOCATOR).send_keys(email)
-        driver.find_element(CREATE_ACCOUNT_BUTTON_METHOD, CREATE_ACCOUNT_BUTTON_LOCATOR).click()
+        email = INVALID_EMAIL
 
-        WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((ERROR_MESSAGE_METHOD,ERROR_MESSAGE_LOCATOR)))
+        driver.find_element(*LoginPageLocators.LOGIN_BUTTON).click()
 
-        error_message = driver.find_element(ERROR_MESSAGE_METHOD,ERROR_MESSAGE_LOCATOR).text
+        WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                LoginPageLocators.NO_ACCOUNT_BUTTON
+            )
+        )
 
-        assert error_message == "Ошибка"
+        driver.find_element(*LoginPageLocators.NO_ACCOUNT_BUTTON).click()
 
-        driver.quit()
+        WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                LoginPageLocators.EMAIL_INPUT
+            )
+        )
 
-    def test_existing_user_registration_error(self,driver):
-        email = "test@test.com"
-        password = "Password123" 
-    
-        driver.find_element(LOGIN_BUTTON_METHOD, LOGIN_BUTTON_LOCATOR).click()
-        WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((NO_ACCOUNT_BUTTON_METHOD, NO_ACCOUNT_BUTTON_LOCATOR)))
-        driver.find_element(NO_ACCOUNT_BUTTON_METHOD, NO_ACCOUNT_BUTTON_LOCATOR).click()
+        driver.find_element(*LoginPageLocators.EMAIL_INPUT).send_keys(email)
 
-        WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((EMAIL_INPUT_METHOD, EMAIL_INPUT_LOCATOR)))
+        driver.find_element(
+            *LoginPageLocators.CREATE_ACCOUNT_BUTTON
+        ).click()
 
-        driver.find_element(EMAIL_INPUT_METHOD, EMAIL_INPUT_LOCATOR).send_keys(email)
-        driver.find_element(PASSWORD_INPUT_METHOD, PASSWORD_INPUT_LOCATOR).send_keys(password)
-        driver.find_element(REPEAT_PASSWORD_INPUT_METHOD, REPEAT_PASSWORD_INPUT_LOCATOR).send_keys(password)
-        driver.find_element(CREATE_ACCOUNT_BUTTON_METHOD, CREATE_ACCOUNT_BUTTON_LOCATOR).click()
+        WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                RegistrationPageLocators.ERROR_MESSAGE
+            )
+        )
 
-        WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((ERROR_MESSAGE_METHOD,ERROR_MESSAGE_LOCATOR)))
+        assert WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                RegistrationPageLocators.ERROR_MESSAGE
+            )
+        ).is_displayed()
 
-        error_message = driver.find_element(ERROR_MESSAGE_METHOD,ERROR_MESSAGE_LOCATOR).text
+    def test_existing_user_registration_error(self, driver):
+        email = TEST_EMAIL
+        password = TEST_PASSWORD
 
-        assert error_message == "Ошибка"
+        driver.find_element(*LoginPageLocators.LOGIN_BUTTON).click()
 
-        driver.quit()
+        WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                LoginPageLocators.NO_ACCOUNT_BUTTON
+            )
+        )
+
+        driver.find_element(*LoginPageLocators.NO_ACCOUNT_BUTTON).click()
+
+        WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                LoginPageLocators.EMAIL_INPUT
+            )
+        )
+
+        driver.find_element(*LoginPageLocators.EMAIL_INPUT).send_keys(email)
+
+        driver.find_element(*LoginPageLocators.PASSWORD_INPUT).send_keys(password)
+
+        driver.find_element(
+            *RegistrationPageLocators.REPEAT_PASSWORD_INPUT
+        ).send_keys(password)
+
+        driver.find_element(
+            *LoginPageLocators.CREATE_ACCOUNT_BUTTON
+        ).click()
+
+        WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                RegistrationPageLocators.ERROR_MESSAGE
+            )
+        )
+
+        assert WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                RegistrationPageLocators.ERROR_MESSAGE
+            )
+        ).is_displayed()

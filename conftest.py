@@ -1,10 +1,12 @@
 import pytest
 from selenium import webdriver
+from constants import BASE_URL
 
 
 @pytest.fixture
 def driver():
     driver = webdriver.Chrome()
-    driver.get("https://qa-desk.education-services.ru/")
+    driver.get(BASE_URL)
 
-    return driver
+    yield driver
+    driver.quit()
