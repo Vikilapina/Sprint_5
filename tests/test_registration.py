@@ -38,12 +38,6 @@ class TestRegistration:
             *LoginPageLocators.CREATE_ACCOUNT_BUTTON
         ).click()
 
-        WebDriverWait(driver, 5).until(
-            expected_conditions.visibility_of_element_located(
-                RegistrationPageLocators.USER_NAME
-            )
-        )
-
         assert WebDriverWait(driver, 5).until(
             expected_conditions.visibility_of_element_located(
                 RegistrationPageLocators.USER_NAME
@@ -74,12 +68,6 @@ class TestRegistration:
         driver.find_element(
             *LoginPageLocators.CREATE_ACCOUNT_BUTTON
         ).click()
-
-        WebDriverWait(driver, 5).until(
-            expected_conditions.visibility_of_element_located(
-                RegistrationPageLocators.ERROR_MESSAGE
-            )
-        )
 
         assert WebDriverWait(driver, 5).until(
             expected_conditions.visibility_of_element_located(
@@ -118,12 +106,6 @@ class TestRegistration:
         driver.find_element(
             *LoginPageLocators.CREATE_ACCOUNT_BUTTON
         ).click()
-
-        WebDriverWait(driver, 5).until(
-            expected_conditions.visibility_of_element_located(
-                RegistrationPageLocators.ERROR_MESSAGE
-            )
-        )
 
         assert WebDriverWait(driver, 5).until(
             expected_conditions.visibility_of_element_located(

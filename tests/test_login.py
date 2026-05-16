@@ -34,12 +34,6 @@ class TestLogin:
             *LoginPageLocators.LOGIN_SUBMIT_BUTTON
         ).click()
 
-        WebDriverWait(driver, 5).until(
-            expected_conditions.visibility_of_element_located(
-                RegistrationPageLocators.USER_NAME
-            )
-        )
-
         assert WebDriverWait(driver, 5).until(
             expected_conditions.visibility_of_element_located(
                 RegistrationPageLocators.USER_NAME

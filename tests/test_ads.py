@@ -133,7 +133,7 @@ class TestAds:
             )
         )
 
-        created_ad_title = WebDriverWait(driver, 5).until(
+        assert WebDriverWait(driver, 5).until(
             expected_conditions.visibility_of_element_located(
                 AdsPageLocators.CREATED_AD_TITLE
             )
